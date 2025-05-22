@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Load your CSV file
-df = pd.read_csv('player_list_2425')  # Replace with your actual file name
+df = pd.read_csv('player_list_2425.csv')  # Replace with your actual file name
 
 # Clean column names (optional but helpful)
 df.columns = [col.strip() for col in df.columns]
