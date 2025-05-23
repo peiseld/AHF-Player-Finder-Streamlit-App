@@ -44,9 +44,9 @@ jersey_number = st.text_input("Enter Jersey Number")
 # Search logic
 if selected_team and jersey_number:
     results = df[
-        df['Team'].str.lower() == selected_team.lower() &
-        df['Jersey Number'].astype(str).str.contains(jersey_number.strip(), na=False)
-    ]
+    (df['Team'].str.lower() == selected_team.lower()) &
+    (df['Jersey Number'].astype(str).str.contains(jersey_number.strip(), na=False))
+]
     if not results.empty:
         st.write("### Matching Players:")
         st.dataframe(results[['Player Name', 'Team', 'Jersey Number']])
