@@ -22,23 +22,33 @@ if player_name:
     else:
         st.warning("No matching player found.")
 
-# Search by Jersey Number and Team
+# Search by Jersey Number and Team with partial + dropdown
 st.header("🔍 Search by Jersey Number and Team")
-team_name = st.text_input("Enter Team Name")
+
+# User types part of a team name
+partial_team = st.text_input("Type part of the team name to filter:")
+
+# Get unique teams, filter if user typed something
+teams = df['Team'].dropna().unique()
+if partial_team:
+    filtered_teams = [team for team in teams if partial_team.lower() in team.lower()]
+else:
+    filtered_teams = sorted(teams)
+
+# Dropdown of matching teams
+selected_team = st.selectbox("Select Team", filtered_teams)
+
+# Jersey number input
 jersey_number = st.text_input("Enter Jersey Number")
 
-if team_name and jersey_number:
-    try:
-        jersey_number = int(jersey_number)
-        results = df[
-            (df['Team'].str.contains(team_name, case=False, na=False)) &
-            (df['Jersey Number'] == jersey_number)
-        ]
-        if not results.empty:
-            st.write("### Player Found:")
-            st.dataframe(results[['Player Name', 'Team', 'Jersey Number']])
-        else:
-            st.warning("No player found with that jersey number on that team.")
-    except ValueError:
-        st.error("Please enter a valid number for the jersey.")
-
+# Search logic
+if selected_team and jersey_number:
+    results = df[
+        df['Team'].str.lower() == selected_team.lower() &
+        df['Jersey Number'].astype(str).str.contains(jersey_number.strip(), na=False)
+    ]
+    if not results.empty:
+        st.write("### Matching Players:")
+        st.dataframe(results[['Player Name', 'Team', 'Jersey Number']])
+    else:
+        st.warning("No player found with that jersey number on that team.")
